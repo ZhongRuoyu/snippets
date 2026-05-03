@@ -1,0 +1,16 @@
+CXX = g++
+CXXFLAGS = -std=c++23 -fmodules
+
+.PHONY: all
+all: main
+
+gcm.cache/std.gcm:
+	$(CXX) $(CXXFLAGS) -c -fmodule-only -fsearch-include-path bits/std.cc
+
+main: main.cc gcm.cache/std.gcm
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+.PHONY: clean
+clean:
+	$(RM) main gcm.cache/std.gcm
+	$(RM) -r gcm.cache

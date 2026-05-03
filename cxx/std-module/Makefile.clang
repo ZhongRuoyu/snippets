@@ -1,0 +1,18 @@
+LLVM_CONFIG = llvm-config
+LLVM_PREFIX := $(shell $(LLVM_CONFIG) --prefix)
+
+CXX = $(LLVM_PREFIX)/bin/clang++
+CXXFLAGS = -std=c++23 -stdlib=libc++ -fprebuilt-module-path=.
+
+.PHONY: all
+all: main
+
+std.pcm: $(LLVM_PREFIX)/share/libc++/v1/std.cppm
+	$(CXX) $(CXXFLAGS) --precompile -Wno-reserved-module-identifier -o $@ $<
+
+main: main.cc std.pcm
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+.PHONY: clean
+clean:
+	$(RM) main std.pcm
